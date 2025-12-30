@@ -17,10 +17,17 @@ export async function buildFastify(): Promise<FastifyInstance> {
 		root: path.join(process.cwd(), 'srcs/static/views'),
 	});
 
-	// Fichiers statiques (CSS, JS)
+	// CSS (depuis srcs)
 	await fastify.register(fastifyStatic, {
-		root: path.join(process.cwd(), 'srcs/static'),
-		prefix: '/static/',
+		root: path.join(process.cwd(), 'srcs/static/css'),
+		prefix: '/static/css/',
+	});
+
+	// JS compiles (depuis dist)
+	await fastify.register(fastifyStatic, {
+		root: path.join(process.cwd(), 'dist/static/js'),
+		prefix: '/static/js/',
+		decorateReply: false,
 	});
 
 	// Setup des routes

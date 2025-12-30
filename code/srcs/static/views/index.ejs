@@ -3,14 +3,47 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Web Template</title>
+	<title>Three.js Learning</title>
 	<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 	<div class="container">
-		<h1>Web Template</h1>
-		<p>Le serveur fonctionne !</p>
+		<h1>Three.js Learning</h1>
+		<p>Exercices progressifs pour apprendre Three.js</p>
+
+		<div class="lessons">
+			<a href="/lesson/01-cube" class="lesson-card">
+				<span class="lesson-number">01</span>
+				<span class="lesson-title">Cube 3D</span>
+				<span class="lesson-desc">Afficher des cubes basiques qui tournent</span>
+			</a>
+
+			<a href="/lesson/02-create-cubes" class="lesson-card">
+				<span class="lesson-number">02</span>
+				<span class="lesson-title">Creer des Cubes</span>
+				<span class="lesson-desc">Interface pour creer des cubes dynamiquement</span>
+			</a>
+
+			<a href="/lesson/03-lights" class="lesson-card">
+				<span class="lesson-number">03</span>
+				<span class="lesson-title">Lumieres</span>
+				<span class="lesson-desc">Cubes avec eclairage (Ambient, Point, Directional)</span>
+			</a>
+
+			<a href="/lesson/04-controls" class="lesson-card">
+				<span class="lesson-number">04</span>
+				<span class="lesson-title">Controls</span>
+				<span class="lesson-desc">Camera OrbitControls + zone de spawn visible</span>
+			</a>
+
+			<a href="/lesson/05-textures" class="lesson-card disabled">
+				<span class="lesson-number">05</span>
+				<span class="lesson-title">Textures</span>
+				<span class="lesson-desc">Appliquer des textures</span>
+			</a>
+		</div>
 	</div>
+
 	<script src="/static/js/main.js"></script>
 </body>
 </html>

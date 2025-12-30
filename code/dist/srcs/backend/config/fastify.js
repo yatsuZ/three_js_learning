@@ -20,10 +20,16 @@ async function buildFastify() {
         engine: { ejs: ejs_1.default },
         root: path_1.default.join(process.cwd(), 'srcs/static/views'),
     });
-    // Fichiers statiques (CSS, JS)
+    // CSS (depuis srcs)
     await fastify.register(static_1.default, {
-        root: path_1.default.join(process.cwd(), 'srcs/static'),
-        prefix: '/static/',
+        root: path_1.default.join(process.cwd(), 'srcs/static/css'),
+        prefix: '/static/css/',
+    });
+    // JS compiles (depuis dist)
+    await fastify.register(static_1.default, {
+        root: path_1.default.join(process.cwd(), 'dist/static/js'),
+        prefix: '/static/js/',
+        decorateReply: false,
     });
     // Setup des routes
     await (0, index_js_1.setupRoutes)(fastify);

@@ -7,9 +7,15 @@ export async function setupRoutes(fastify: FastifyInstance) {
 	await fastify.register(healthRoutes, { prefix: '/api' });
 	await fastify.register(envRoutes, { prefix: '/api' });
 
-	// Route principale
+	// Route principale (hub)
 	fastify.get('/', async (request, reply) => {
 		return reply.view('index.ejs');
+	});
+
+	// Routes des lecons
+	fastify.get('/lesson/:id', async (request, reply) => {
+		const { id } = request.params as { id: string };
+		return reply.view(`lessons/${id}.ejs`);
 	});
 
 	// 404 handler

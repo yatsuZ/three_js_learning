@@ -20,13 +20,13 @@ RED     = \033[1;31m
 NC      = \033[0m
 
 PORT             = 3000
-PROJECT_NAME     = web_template
+PROJECT_NAME     = three_js_learning
 CODE_DIR         = ./code
 NODE_MODULE_PATH = $(CODE_DIR)/node_modules
 DOCKER_COMPOSE   = docker compose
 COMPOSE_FILE     = ./docker-compose.yml
 DC               = $(DOCKER_COMPOSE) -f $(COMPOSE_FILE)
-CONTAINER_NAME   = app_container
+CONTAINER_NAME   = threejs_container
 
 all: help
 

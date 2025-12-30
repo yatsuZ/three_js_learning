@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>01 - Cube 3D | Three.js Learning</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+	<div class="lesson-container">
+		<div class="lesson-header">
+			<a href="/" class="back-btn">←</a>
+			<h1>01 - Cube 3D</h1>
+			<div class="header-controls">
+				<label class="toggle-label">
+					<input type="checkbox" id="lighting-toggle">
+					Lumieres
+				</label>
+			</div>
+		</div>
+		<canvas id="canvas"></canvas>
+	</div>
+
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+		}
+	}
+	</script>
+	<script type="module" src="/static/js/lessons/01-cube/index.js"></script>
+</body>
+</html>
