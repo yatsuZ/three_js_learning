@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>06 - Blender Import | Three.js Learning</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+	<div class="lesson-container">
+		<div class="lesson-header">
+			<a href="/" class="back-btn">←</a>
+			<h1>06 - Blender Import</h1>
+			<div class="header-controls">
+				<label class="upload-label">
+					<input type="file" id="model-upload" accept=".glb,.gltf" hidden>
+					<span class="btn btn-small">Charger .glb</span>
+				</label>
+				<a href="/docs/06-blender-import" class="btn btn-small btn-doc">Doc</a>
+			</div>
+		</div>
+
+		<div class="lesson-content">
+			<div class="canvas-wrapper">
+				<canvas id="canvas"></canvas>
+
+				<div id="loading" class="loading-overlay" style="display: none;">
+					<span>Chargement...</span>
+				</div>
+
+				<div class="model-info">
+					<h3>Modele</h3>
+					<p>Fichier: <span id="model-name">exemple_default.glb</span></p>
+					<p>Animations: <span id="anim-count">0</span></p>
+				</div>
+			</div>
+
+			<div class="control-panel">
+				<h2>Parametres</h2>
+
+				<!-- Rotation -->
+				<div class="control-group">
+					<label>
+						<input type="checkbox" id="auto-rotate" checked>
+						Auto-rotation
+					</label>
+				</div>
+
+				<div class="control-group">
+					<label for="rotation-speed">Vitesse rotation</label>
+					<input type="range" id="rotation-speed" min="0" max="5" step="0.1" value="1">
+				</div>
+
+				<!-- Lumieres -->
+				<h2>Lumieres</h2>
+
+				<div class="control-group">
+					<label for="ambient-intensity">Ambiante</label>
+					<input type="range" id="ambient-intensity" min="0" max="3" step="0.1" value="1.2">
+				</div>
+
+				<div class="control-group">
+					<label for="point-intensity">Point</label>
+					<input type="range" id="point-intensity" min="0" max="5" step="0.1" value="2">
+				</div>
+
+				<div class="control-group">
+					<label for="directional-intensity">Directionnelle</label>
+					<input type="range" id="directional-intensity" min="0" max="5" step="0.1" value="1.5">
+				</div>
+
+				<!-- Affichage -->
+				<h2>Affichage</h2>
+
+				<div class="control-group">
+					<label>
+						<input type="checkbox" id="show-grid" checked>
+						Grille
+					</label>
+				</div>
+
+				<div class="control-group">
+					<label>
+						<input type="checkbox" id="wireframe-mode">
+						Wireframe
+					</label>
+				</div>
+
+				<div class="control-group">
+					<label>
+						<input type="checkbox" id="enhance-materials">
+						Forcer reaction lumiere
+					</label>
+				</div>
+
+				<div class="control-group">
+					<label for="bg-color">Fond</label>
+					<input type="color" id="bg-color" value="#1a1a2e">
+				</div>
+
+				<!-- Animation -->
+				<h2>Animation</h2>
+
+				<div class="control-group">
+					<label for="anim-speed">Vitesse animation</label>
+					<input type="range" id="anim-speed" min="0" max="3" step="0.1" value="1">
+				</div>
+
+				<div class="control-group">
+					<label for="model-scale">Echelle modele</label>
+					<input type="range" id="model-scale" min="0.5" max="5" step="0.1" value="3">
+				</div>
+
+				<!-- Reset -->
+				<div class="control-buttons">
+					<button id="reset-btn" class="btn btn-danger">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+		}
+	}
+	</script>
+	<script type="module" src="/static/js/lessons/06-blender/index.js"></script>
+</body>
+</html>

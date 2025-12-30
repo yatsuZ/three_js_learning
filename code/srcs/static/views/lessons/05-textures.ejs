@@ -3,20 +3,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>01 - Cube 3D | Three.js Learning</title>
+	<title>05 - Textures | Three.js Learning</title>
 	<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 	<div class="lesson-container">
 		<div class="lesson-header">
 			<a href="/" class="back-btn">←</a>
-			<h1>01 - Cube 3D</h1>
+			<h1>05 - Textures</h1>
 			<div class="header-controls">
-				<label class="toggle-label">
-					<input type="checkbox" id="lighting-toggle">
-					Lumieres
+				<label class="upload-label">
+					<input type="file" id="texture-upload" accept="image/*" hidden>
+					<span class="btn btn-small">Charger texture</span>
 				</label>
-				<a href="/docs/01-cube" class="btn btn-small btn-doc">Doc</a>
+				<a href="/docs/05-textures" class="btn btn-small btn-doc">Doc</a>
 			</div>
 		</div>
 		<canvas id="canvas"></canvas>
@@ -30,6 +30,6 @@
 		}
 	}
 	</script>
-	<script type="module" src="/static/js/lessons/01-cube/index.js"></script>
+	<script type="module" src="/static/js/lessons/05-textures/index.js"></script>
 </body>
 </html>

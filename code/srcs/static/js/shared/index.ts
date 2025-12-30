@@ -14,6 +14,11 @@ export type { LightConfig, LightObjects } from './core/lights.ts';
 export { createOrbitControls, createBoundingBox } from './core/controls.ts';
 export type { ControlsOptions } from './core/controls.ts';
 
+export { loadTexture, createCheckerTexture, createNoiseTexture, createGradientTexture } from './core/textures.ts';
+
+export { loadGLTF, loadGLTFFromFile, fitModelToView } from './core/modelLoader.ts';
+export type { LoadedModel } from './core/modelLoader.ts';
+
 // Config
 export { loadConfig, getConfig, getMaxCubes } from './config/loader.ts';
 export type { AppConfig } from './config/loader.ts';

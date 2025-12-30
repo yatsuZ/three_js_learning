@@ -31,6 +31,12 @@ async function buildFastify() {
         prefix: '/static/js/',
         decorateReply: false,
     });
+    // Assets (modeles 3D, images, etc.)
+    await fastify.register(static_1.default, {
+        root: path_1.default.join(process.cwd(), 'srcs/static/other'),
+        prefix: '/static/assets/',
+        decorateReply: false,
+    });
     // Setup des routes
     await (0, index_js_1.setupRoutes)(fastify);
     return fastify;

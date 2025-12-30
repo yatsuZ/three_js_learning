@@ -30,6 +30,13 @@ export async function buildFastify(): Promise<FastifyInstance> {
 		decorateReply: false,
 	});
 
+	// Assets (modeles 3D, images, etc.)
+	await fastify.register(fastifyStatic, {
+		root: path.join(process.cwd(), 'srcs/static/other'),
+		prefix: '/static/assets/',
+		decorateReply: false,
+	});
+
 	// Setup des routes
 	await setupRoutes(fastify);
 

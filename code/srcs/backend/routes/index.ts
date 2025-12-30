@@ -1,11 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { healthRoutes } from './api/health.js';
 import { envRoutes } from './api/env.js';
+import { docsRoutes } from './api/docs.js';
 
 export async function setupRoutes(fastify: FastifyInstance) {
 	// Routes API
 	await fastify.register(healthRoutes, { prefix: '/api' });
 	await fastify.register(envRoutes, { prefix: '/api' });
+	await fastify.register(docsRoutes, { prefix: '/api' });
 
 	// Route principale (hub)
 	fastify.get('/', async (request, reply) => {
@@ -16,6 +18,16 @@ export async function setupRoutes(fastify: FastifyInstance) {
 	fastify.get('/lesson/:id', async (request, reply) => {
 		const { id } = request.params as { id: string };
 		return reply.view(`lessons/${id}.ejs`);
+	});
+
+	// Route documentation
+	fastify.get('/docs', async (request, reply) => {
+		return reply.view('docs.ejs');
+	});
+
+	fastify.get('/docs/:filename', async (request, reply) => {
+		const { filename } = request.params as { filename: string };
+		return reply.view('docs.ejs', { filename });
 	});
 
 	// 404 handler

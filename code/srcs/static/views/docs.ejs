@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Documentation | Three.js Learning</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+	<link rel="stylesheet" href="/static/css/docs.css">
+</head>
+<body>
+	<div class="docs-container">
+		<aside class="docs-sidebar">
+			<div class="sidebar-header">
+				<a href="/" class="back-link">← Accueil</a>
+				<h2>Documentation</h2>
+			</div>
+			<nav class="docs-nav" id="docs-nav">
+				<!-- Rempli par JS -->
+				<p class="loading">Chargement...</p>
+			</nav>
+		</aside>
+
+		<main class="docs-content">
+			<article class="markdown-body" id="docs-content">
+				<div class="welcome">
+					<h1>Documentation Three.js Learning</h1>
+					<p>Sélectionnez une leçon dans le menu pour voir sa documentation.</p>
+				</div>
+			</article>
+		</main>
+	</div>
+
+	<!-- Marked.js pour parser le Markdown -->
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script>
+		const nav = document.getElementById('docs-nav');
+		const content = document.getElementById('docs-content');
+
+		// Récupérer le filename depuis l'URL si présent
+		const initialFile = '<%= typeof filename !== "undefined" ? filename : "" %>';
+
+		// Charger la liste des fichiers
+		async function loadDocsList() {
+			try {
+				const response = await fetch('/api/docs');
+				const data = await response.json();
+
+				if (data.success) {
+					nav.innerHTML = data.files.map(file => `
+						<a href="/docs/${file.name}"
+						   class="nav-item ${file.name === initialFile ? 'active' : ''}"
+						   data-file="${file.name}">
+							${file.title}
+						</a>
+					`).join('');
+
+					// Event listeners
+					nav.querySelectorAll('.nav-item').forEach(item => {
+						item.addEventListener('click', async (e) => {
+							e.preventDefault();
+							const filename = item.dataset.file;
+							await loadDoc(filename);
+							// Update URL sans recharger
+							history.pushState({}, '', `/docs/${filename}`);
+							// Update active state
+							nav.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+							item.classList.add('active');
+						});
+					});
+
+					// Charger le fichier initial si présent
+					if (initialFile) {
+						await loadDoc(initialFile);
+					}
+				}
+			} catch (error) {
+				nav.innerHTML = '<p class="error">Erreur de chargement</p>';
+			}
+		}
+
+		// Charger un fichier de documentation
+		async function loadDoc(filename) {
+			content.innerHTML = '<p class="loading">Chargement...</p>';
+
+			try {
+				const response = await fetch(`/api/docs/${filename}`);
+				const data = await response.json();
+
+				if (data.success) {
+					// Parser le Markdown avec marked
+					content.innerHTML = marked.parse(data.content);
+					// Scroll to top
+					content.scrollTop = 0;
+				} else {
+					content.innerHTML = '<p class="error">Fichier non trouvé</p>';
+				}
+			} catch (error) {
+				content.innerHTML = '<p class="error">Erreur de chargement</p>';
+			}
+		}
+
+		// Init
+		loadDocsList();
+	</script>
+</body>
+</html>
