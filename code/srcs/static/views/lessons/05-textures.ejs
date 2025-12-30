@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>05 - Textures | Three.js Learning</title>
-	<link rel="stylesheet" href="/static/css/style.css">
-</head>
+<%- include('../partials/head', { title: '05 - Textures' }) %>
 <body>
 	<div class="lesson-container">
-		<div class="lesson-header">
-			<a href="/" class="back-btn">←</a>
-			<h1>05 - Textures</h1>
-			<div class="header-controls">
-				<label class="upload-label">
-					<input type="file" id="texture-upload" accept="image/*" hidden>
-					<span class="btn btn-small">Charger texture</span>
-				</label>
-				<a href="/docs/05-textures" class="btn btn-small btn-doc">Doc</a>
-			</div>
-		</div>
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '05',
+			lessonTitle: 'Textures',
+			docSlug: '05-textures',
+			headerContent: `
+				<div class="header-controls">
+					<label class="upload-label">
+						<input type="file" id="texture-upload" accept="image/*" hidden>
+						<span class="btn btn-small">Charger texture</span>
+					</label>
+				</div>
+			`
+		}) %>
 		<canvas id="canvas"></canvas>
 	</div>
 
-	<script type="importmap">
-	{
-		"imports": {
-			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-		}
-	}
-	</script>
+	<%- include('../partials/importmap') %>
 	<script type="module" src="/static/js/lessons/05-textures/index.js"></script>
 </body>
 </html>

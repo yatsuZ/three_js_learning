@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><%= title %> | Three.js Learning</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+	<% if (typeof extraCss !== 'undefined' && extraCss) { %>
+	<link rel="stylesheet" href="/static/css/<%= extraCss %>">
+	<% } %>
+</head>

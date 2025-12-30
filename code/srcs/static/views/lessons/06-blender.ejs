@@ -1,24 +1,19 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>06 - Blender Import | Three.js Learning</title>
-	<link rel="stylesheet" href="/static/css/style.css">
-</head>
+<%- include('../partials/head', { title: '06 - Blender Import' }) %>
 <body>
 	<div class="lesson-container">
-		<div class="lesson-header">
-			<a href="/" class="back-btn">←</a>
-			<h1>06 - Blender Import</h1>
-			<div class="header-controls">
-				<label class="upload-label">
-					<input type="file" id="model-upload" accept=".glb,.gltf" hidden>
-					<span class="btn btn-small">Charger .glb</span>
-				</label>
-				<a href="/docs/06-blender-import" class="btn btn-small btn-doc">Doc</a>
-			</div>
-		</div>
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '06',
+			lessonTitle: 'Blender Import',
+			docSlug: '06-blender-import',
+			headerContent: `
+				<div class="header-controls">
+					<label class="upload-label">
+						<input type="file" id="model-upload" accept=".glb,.gltf" hidden>
+						<span class="btn btn-small">Charger .glb</span>
+					</label>
+				</div>
+			`
+		}) %>
 
 		<div class="lesson-content">
 			<div class="canvas-wrapper">
@@ -38,7 +33,6 @@
 			<div class="control-panel">
 				<h2>Parametres</h2>
 
-				<!-- Rotation -->
 				<div class="control-group">
 					<label>
 						<input type="checkbox" id="auto-rotate" checked>
@@ -51,7 +45,6 @@
 					<input type="range" id="rotation-speed" min="0" max="5" step="0.1" value="1">
 				</div>
 
-				<!-- Lumieres -->
 				<h2>Lumieres</h2>
 
 				<div class="control-group">
@@ -69,7 +62,6 @@
 					<input type="range" id="directional-intensity" min="0" max="5" step="0.1" value="1.5">
 				</div>
 
-				<!-- Affichage -->
 				<h2>Affichage</h2>
 
 				<div class="control-group">
@@ -98,7 +90,6 @@
 					<input type="color" id="bg-color" value="#1a1a2e">
 				</div>
 
-				<!-- Animation -->
 				<h2>Animation</h2>
 
 				<div class="control-group">
@@ -111,7 +102,6 @@
 					<input type="range" id="model-scale" min="0.5" max="5" step="0.1" value="3">
 				</div>
 
-				<!-- Reset -->
 				<div class="control-buttons">
 					<button id="reset-btn" class="btn btn-danger">Reset</button>
 				</div>
@@ -119,14 +109,7 @@
 		</div>
 	</div>
 
-	<script type="importmap">
-	{
-		"imports": {
-			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-		}
-	}
-	</script>
+	<%- include('../partials/importmap') %>
 	<script type="module" src="/static/js/lessons/06-blender/index.js"></script>
 </body>
 </html>

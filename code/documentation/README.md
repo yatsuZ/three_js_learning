@@ -7,7 +7,8 @@
 | Document | Description |
 |----------|-------------|
 | [Motivation](./motivation.md) | Pourquoi ce projet existe |
-| [Three.js](./threejs.md) | Presentation du framework |
+| [Technologies](./technologies.md) | Package vs Library vs Framework + outils utilises |
+| [Three.js](./threejs.md) | Presentation de la library 3D |
 | [WebGL](./webgl.md) | L'API graphique derriere Three.js |
 | [CDN](./cdn.md) | Comment on charge les bibliotheques |
 
@@ -47,10 +48,11 @@ La documentation est accessible de deux facons :
 
 ```
 Introduction
-├── Motivation → Pourquoi ce projet
-├── Three.js  → C'est quoi Three.js
-├── WebGL     → C'est quoi WebGL
-└── CDN       → Comment on charge les libs
+├── Motivation    → Pourquoi ce projet
+├── Technologies  → Package vs Library vs Framework
+├── Three.js      → C'est quoi Three.js
+├── WebGL         → C'est quoi WebGL
+└── CDN           → Comment on charge les libs
 
 Lecons
 ├── 01-Cube     → Les bases (Scene, Camera, Mesh)

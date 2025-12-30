@@ -1,0 +1,8 @@
+<div class="lesson-header">
+	<a href="/" class="back-btn">←</a>
+	<h1><%= lessonNumber %> - <%= lessonTitle %></h1>
+	<% if (typeof headerContent !== 'undefined') { %>
+		<%- headerContent %>
+	<% } %>
+	<a href="/docs/<%= docSlug %>" class="btn btn-small btn-doc">Doc</a>
+</div>

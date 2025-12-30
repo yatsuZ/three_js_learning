@@ -1,77 +1,32 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Three.js Learning</title>
-	<link rel="stylesheet" href="/static/css/style.css">
-</head>
+<%- include('./partials/head', { title: 'Accueil' }) %>
 <body>
 	<div class="container">
 		<h1>Three.js Learning</h1>
 		<p>Exercices progressifs pour apprendre Three.js</p>
+
 		<a href="/docs" class="btn-docs-link">Documentation</a>
 
 		<div class="lessons">
-			<a href="/lesson/01-cube" class="lesson-card">
-				<span class="lesson-number">01</span>
-				<span class="lesson-title">Cube 3D</span>
-				<span class="lesson-desc">Afficher des cubes basiques qui tournent</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '01', slug: '01-cube', title: 'Cube 3D', desc: 'Afficher des cubes basiques qui tournent'}) %>
 
-			<a href="/lesson/02-create-cubes" class="lesson-card">
-				<span class="lesson-number">02</span>
-				<span class="lesson-title">Creer des Cubes</span>
-				<span class="lesson-desc">Interface pour creer des cubes dynamiquement</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '02', slug: '02-create-cubes', title: 'Creer des Cubes', desc: 'Interface pour creer des cubes dynamiquement' }) %>
 
-			<a href="/lesson/03-lights" class="lesson-card">
-				<span class="lesson-number">03</span>
-				<span class="lesson-title">Lumieres</span>
-				<span class="lesson-desc">Cubes avec eclairage (Ambient, Point, Directional)</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '03', slug: '03-lights', title: 'Lumieres', desc: 'Cubes avec eclairage (Ambient, Point, Directional)' }) %>
 
-			<a href="/lesson/04-controls" class="lesson-card">
-				<span class="lesson-number">04</span>
-				<span class="lesson-title">Controls</span>
-				<span class="lesson-desc">Camera OrbitControls + zone de spawn visible</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '04', slug: '04-controls', title: 'Controls', desc: 'Camera OrbitControls + zone de spawn visible' }) %>
 
-			<a href="/lesson/05-textures" class="lesson-card">
-				<span class="lesson-number">05</span>
-				<span class="lesson-title">Textures</span>
-				<span class="lesson-desc">Textures procedurales + upload custom</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '05', slug: '05-textures', title: 'Textures', desc: 'Textures procedurales + upload custom' }) %>
 
-			<a href="/lesson/06-blender" class="lesson-card">
-				<span class="lesson-number">06</span>
-				<span class="lesson-title">Blender Import</span>
-				<span class="lesson-desc">Charger des modeles .glb depuis Blender</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '06', slug: '06-blender', title: 'Blender Import', desc: 'Charger des modeles .glb depuis Blender' }) %>
 
-			<a href="/lesson/07-animations" class="lesson-card disabled">
-				<span class="lesson-number">07</span>
-				<span class="lesson-title">Animations</span>
-				<span class="lesson-desc">Animer des objets avec GSAP</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '07', slug: '07-animations', title: 'Animations', desc: 'Animer des objets avec GSAP', disabled: true }) %>
 
-			<a href="/lesson/08-shadows" class="lesson-card disabled">
-				<span class="lesson-number">08</span>
-				<span class="lesson-title">Shadows</span>
-				<span class="lesson-desc">Ombres portees</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '08', slug: '08-shadows', title: 'Shadows', desc: 'Ombres portees', disabled: true }) %>
 
-			<a href="/lesson/09-particles" class="lesson-card disabled">
-				<span class="lesson-number">09</span>
-				<span class="lesson-title">Particles</span>
-				<span class="lesson-desc">Systemes de particules</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '09', slug: '09-particles', title: 'Particles', desc: 'Systemes de particules', disabled: true }) %>
 
-			<a href="/lesson/10-physics" class="lesson-card disabled">
-				<span class="lesson-number">10</span>
-				<span class="lesson-title">Physics</span>
-				<span class="lesson-desc">Physique avec Cannon.js</span>
-			</a>
+			<%- include('./partials/lesson-card', { number: '10', slug: '10-physics', title: 'Physics', desc: 'Physique avec Cannon.js', disabled: true }) %>
+
 		</div>
 	</div>
 
