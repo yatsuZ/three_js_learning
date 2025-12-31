@@ -1,22 +1,25 @@
 import * as THREE from 'three';
-import { LessonBase, addLights, createOrbitControls } from '../../shared/index.ts';
-import type { LessonConfig } from '../../shared/index.ts';
+import { LessonBase, addLights, createOrbitControls, loadGLTF, fitModelToView, Logger } from '../../shared/index.ts';
+import type { LessonConfig, LoadedModel } from '../../shared/index.ts';
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { getUIElements, getAnimationOptions } from './ui.ts';
 import type { UIElements } from './ui.ts';
 import { AnimationController } from './animations/index.ts';
 
+// Position initiale de la camera
+const CAMERA_SPAWN = { x: 0, y: 2, z: 10 };
+const GLB_URL = '/static/assets/exemple_default.glb';
+
 /**
  * Lecon 07 - Animations avec GSAP
  */
-// Position initiale de la camera
-const CAMERA_SPAWN = { x: 0, y: 2, z: 10 };
-
 class Lesson07 extends LessonBase {
 	private controls!: OrbitControls;
 	private cubes: THREE.Mesh[] = [];
 	private ui!: UIElements;
 	private animator!: AnimationController;
+	private glbModel: LoadedModel | null = null;
+	private isGlbMode = false;
 
 	constructor() {
 		const config: LessonConfig = { id: '07', name: 'Animations GSAP' };
@@ -33,11 +36,20 @@ class Lesson07 extends LessonBase {
 		this.onDispose(() => {
 			this.animator.killAll();
 			this.controls.dispose();
+			if (this.glbModel) {
+				this.scene.remove(this.glbModel.scene);
+			}
 		});
 	}
 
 	protected update(_delta: number): void {
 		this.controls.update();
+		this.updateProgressBar();
+	}
+
+	private updateProgressBar(): void {
+		const progress = this.animator.getProgress() * 100;
+		this.ui.progressBar.style.width = `${progress}%`;
 	}
 
 	private setupLights(): void {
@@ -93,10 +105,11 @@ class Lesson07 extends LessonBase {
 			this.animator.play(this.ui.animationSelect.value, options);
 		});
 
-		// Reset button - reset cubes + camera
+		// Reset button - reset cubes + camera + UI
 		this.addEventListener(this.ui.resetBtn, 'click', () => {
 			this.animator.reset();
 			this.resetCamera();
+			this.resetUI();
 		});
 
 		// Duration slider
@@ -104,10 +117,72 @@ class Lesson07 extends LessonBase {
 			this.ui.durationValue.textContent = `${this.ui.duration.value}s`;
 		});
 
+		// Speed slider (temps reel)
+		this.addEventListener(this.ui.speed, 'input', () => {
+			const speed = parseFloat(this.ui.speed.value);
+			this.ui.speedValue.textContent = `${speed}x`;
+			this.animator.setSpeed(speed);
+		});
+
 		// Timeline controls
 		this.addEventListener(this.ui.pauseBtn, 'click', () => this.animator.pause());
 		this.addEventListener(this.ui.resumeBtn, 'click', () => this.animator.resume());
 		this.addEventListener(this.ui.reverseBtn, 'click', () => this.animator.reverse());
+
+		// GLB mode toggle
+		this.addEventListener(this.ui.glbModeToggle, 'change', () => {
+			this.toggleGlbMode(this.ui.glbModeToggle.checked);
+		});
+	}
+
+	private async toggleGlbMode(enabled: boolean): Promise<void> {
+		this.isGlbMode = enabled;
+		this.animator.reset();
+		Logger.info('Toggle GLB mode:', enabled);
+
+		if (enabled) {
+			// Cacher les cubes
+			this.cubes.forEach(c => c.visible = false);
+
+			// Charger le modele GLB si pas deja fait
+			if (!this.glbModel) {
+				try {
+					Logger.info('Chargement du modele GLB...');
+					this.glbModel = await loadGLTF(GLB_URL);
+					Logger.info('Modele charge:', this.glbModel);
+
+					fitModelToView(this.glbModel.scene, 3);
+					Logger.info('Position apres fit:', this.glbModel.scene.position);
+					Logger.info('Scale apres fit:', this.glbModel.scene.scale);
+
+					this.scene.add(this.glbModel.scene);
+					Logger.info('Modele ajoute a la scene');
+				} catch (error) {
+					Logger.error('Erreur chargement GLB:', error);
+					// Revenir aux cubes en cas d'erreur
+					this.cubes.forEach(c => c.visible = true);
+					this.ui.glbModeToggle.checked = false;
+					this.isGlbMode = false;
+					return;
+				}
+			} else {
+				this.glbModel.scene.visible = true;
+			}
+
+			// Mettre a jour les cibles de l'animator
+			this.animator.setTargets([this.glbModel.scene]);
+		} else {
+			// Cacher le modele GLB
+			if (this.glbModel) {
+				this.glbModel.scene.visible = false;
+			}
+
+			// Montrer les cubes
+			this.cubes.forEach(c => c.visible = true);
+
+			// Remettre les cubes comme cibles
+			this.animator.setTargets(this.cubes);
+		}
 	}
 
 	private resetCamera(): void {
@@ -115,6 +190,33 @@ class Lesson07 extends LessonBase {
 		this.camera.lookAt(0, 0, 0);
 		this.controls.target.set(0, 0, 0);
 		this.controls.update();
+	}
+
+	private resetUI(): void {
+		// Reset duration
+		this.ui.duration.value = '1';
+		this.ui.durationValue.textContent = '1s';
+
+		// Reset speed
+		this.ui.speed.value = '1';
+		this.ui.speedValue.textContent = '1x';
+		this.animator.setSpeed(1);
+
+		// Reset easing
+		this.ui.easingSelect.value = 'power2.inOut';
+
+		// Reset toggles
+		this.ui.repeatToggle.checked = false;
+		this.ui.yoyoToggle.checked = false;
+
+		// Reset progress bar
+		this.ui.progressBar.style.width = '0%';
+
+		// Reset GLB mode if needed
+		if (this.isGlbMode) {
+			this.ui.glbModeToggle.checked = false;
+			this.toggleGlbMode(false);
+		}
 	}
 }
 

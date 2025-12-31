@@ -14,6 +14,7 @@
 						<option value="elastic">Elastic</option>
 						<option value="sequence">Sequence</option>
 						<option value="stagger">Stagger</option>
+						<option value="wave">Wave</option>
 					</select>
 					<button id="play-btn" class="btn-primary">Play</button>
 					<button id="reset-btn" class="btn-secondary">Reset</button>
@@ -22,13 +23,20 @@
 		}) %>
 		<canvas id="canvas"></canvas>
 
-		<!-- Panneau de controle -->
-		<div class="control-panel">
+		<!-- Panneau de controle (overlay fixe) -->
+		<div class="control-panel control-panel-overlay">
 			<h3>Controles Animation</h3>
 
 			<div class="control-group">
+				<label>
+					<input type="checkbox" id="glb-mode-toggle">
+					Mode Modele 3D
+				</label>
+			</div>
+
+			<div class="control-group">
 				<label for="duration">Duree (s)</label>
-				<input type="range" id="duration" min="0.1" max="3" step="0.1" value="1">
+				<input type="range" id="duration" min="0.3" max="3" step="0.1" value="1">
 				<span id="duration-value">1s</span>
 			</div>
 
@@ -58,11 +66,22 @@
 				</label>
 			</div>
 
+			<div class="control-group">
+				<label for="speed">Vitesse</label>
+				<input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+				<span id="speed-value">1x</span>
+			</div>
+
 			<div class="control-group timeline-controls">
 				<h4>Timeline</h4>
-				<button id="pause-btn" class="btn-small">Pause</button>
-				<button id="resume-btn" class="btn-small">Resume</button>
-				<button id="reverse-btn" class="btn-small">Reverse</button>
+				<div class="progress-bar-container">
+					<div id="progress-bar" class="progress-bar"></div>
+				</div>
+				<div class="timeline-buttons">
+					<button id="pause-btn" class="btn-small">Pause</button>
+					<button id="resume-btn" class="btn-small">Resume</button>
+					<button id="reverse-btn" class="btn-small">Reverse</button>
+				</div>
 			</div>
 		</div>
 	</div>

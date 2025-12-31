@@ -6,24 +6,41 @@ import { animateSpin } from './spin.ts';
 import { animateElastic } from './elastic.ts';
 import { animateSequence } from './sequence.ts';
 import { animateStagger } from './stagger.ts';
+import { animateWave } from './wave.ts';
 
 export type { AnimationOptions, GSAPTimeline };
 
 /**
- * Controleur d'animations GSAP pour les cubes
+ * Controleur d'animations GSAP pour objets 3D
  */
 export class AnimationController {
-	private cubes: THREE.Mesh[];
+	private targets: THREE.Object3D[];
 	private currentTimeline: GSAPTimeline | null = null;
-	private initialPositions: { x: number; y: number; z: number }[];
+	private initialStates: { pos: { x: number; y: number; z: number }; rot: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }[];
 
-	constructor(cubes: THREE.Mesh[]) {
-		this.cubes = cubes;
-		this.initialPositions = cubes.map(c => ({
-			x: c.position.x,
-			y: c.position.y,
-			z: c.position.z
+	constructor(targets: THREE.Object3D[]) {
+		this.targets = targets;
+		this.initialStates = this.captureStates(targets);
+	}
+
+	/**
+	 * Capture l'etat initial des objets
+	 */
+	private captureStates(objects: THREE.Object3D[]) {
+		return objects.map(o => ({
+			pos: { x: o.position.x, y: o.position.y, z: o.position.z },
+			rot: { x: o.rotation.x, y: o.rotation.y, z: o.rotation.z },
+			scale: { x: o.scale.x, y: o.scale.y, z: o.scale.z }
 		}));
+	}
+
+	/**
+	 * Change les cibles d'animation
+	 */
+	setTargets(targets: THREE.Object3D[]): void {
+		this.killAll();
+		this.targets = targets;
+		this.initialStates = this.captureStates(targets);
 	}
 
 	/**
@@ -33,7 +50,7 @@ export class AnimationController {
 		this.killAll();
 		this.reset();
 
-		const ctx = { cubes: this.cubes, options };
+		const ctx = { cubes: this.targets, options };
 
 		switch (type) {
 			case 'bounce':
@@ -54,19 +71,24 @@ export class AnimationController {
 			case 'stagger':
 				this.currentTimeline = animateStagger(ctx);
 				break;
+			case 'wave':
+				this.currentTimeline = animateWave(ctx);
+				break;
 		}
 	}
 
 	/**
-	 * Reset les cubes a leur position initiale
+	 * Reset les objets a leur etat initial
 	 */
 	reset(): void {
 		this.killAll();
-		this.cubes.forEach((cube, i) => {
-			const pos = this.initialPositions[i];
-			cube.position.set(pos.x, pos.y, pos.z);
-			cube.rotation.set(0, 0, 0);
-			cube.scale.set(1, 1, 1);
+		this.targets.forEach((obj, i) => {
+			const state = this.initialStates[i];
+			if (state) {
+				obj.position.set(state.pos.x, state.pos.y, state.pos.z);
+				obj.rotation.set(state.rot.x, state.rot.y, state.rot.z);
+				obj.scale.set(state.scale.x, state.scale.y, state.scale.z);
+			}
 		});
 	}
 
@@ -77,10 +99,10 @@ export class AnimationController {
 		this.currentTimeline?.kill();
 		this.currentTimeline = null;
 
-		this.cubes.forEach(cube => {
-			gsap.killTweensOf(cube.position);
-			gsap.killTweensOf(cube.rotation);
-			gsap.killTweensOf(cube.scale);
+		this.targets.forEach(obj => {
+			gsap.killTweensOf(obj.position);
+			gsap.killTweensOf(obj.rotation);
+			gsap.killTweensOf(obj.scale);
 		});
 	}
 
@@ -94,5 +116,19 @@ export class AnimationController {
 
 	reverse(): void {
 		this.currentTimeline?.reverse();
+	}
+
+	/**
+	 * Retourne la progression de l'animation (0-1)
+	 */
+	getProgress(): number {
+		return this.currentTimeline?.progress() ?? 0;
+	}
+
+	/**
+	 * Change la vitesse de l'animation en temps reel
+	 */
+	setSpeed(speed: number): void {
+		this.currentTimeline?.timeScale(speed);
 	}
 }

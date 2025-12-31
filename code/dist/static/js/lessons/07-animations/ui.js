@@ -12,9 +12,13 @@ export function getUIElements() {
         easingSelect: DOM.element('easing-select'),
         repeatToggle: DOM.input('repeat-toggle'),
         yoyoToggle: DOM.input('yoyo-toggle'),
+        speed: DOM.input('speed'),
+        speedValue: DOM.element('speed-value'),
         pauseBtn: DOM.button('pause-btn'),
         resumeBtn: DOM.button('resume-btn'),
-        reverseBtn: DOM.button('reverse-btn')
+        reverseBtn: DOM.button('reverse-btn'),
+        progressBar: DOM.element('progress-bar'),
+        glbModeToggle: DOM.input('glb-mode-toggle')
     };
 }
 /**

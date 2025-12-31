@@ -1,23 +1,30 @@
 /**
- * Animation Bounce - le cube central monte et redescend
+ * Animation Bounce - tous les cubes montent et redescendent avec stagger
  */
 export function animateBounce(ctx) {
-    const centerCube = ctx.cubes[2];
     const timeline = gsap.timeline({
         repeat: ctx.options.repeat,
         yoyo: ctx.options.yoyo
     });
-    // Monte puis redescend automatiquement
-    timeline
-        .to(centerCube.position, {
+    // Monte avec stagger depuis le centre
+    timeline.to(ctx.cubes.map(c => c.position), {
         y: 3,
         duration: ctx.options.duration / 2,
-        ease: ctx.options.ease
-    })
-        .to(centerCube.position, {
+        ease: ctx.options.ease,
+        stagger: {
+            each: 0.08,
+            from: 'center'
+        }
+    });
+    // Redescend avec bounce
+    timeline.to(ctx.cubes.map(c => c.position), {
         y: 0,
         duration: ctx.options.duration / 2,
-        ease: 'bounce.out'
+        ease: 'bounce.out',
+        stagger: {
+            each: 0.08,
+            from: 'center'
+        }
     });
     return timeline;
 }

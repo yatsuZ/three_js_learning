@@ -12,9 +12,10 @@ export interface AnimationOptions {
 
 /**
  * Contexte partage entre les animations
+ * Supporte cubes (Mesh[]) ou modele GLB (Object3D[])
  */
 export interface AnimationContext {
-	cubes: THREE.Mesh[];
+	cubes: THREE.Object3D[];
 	options: AnimationOptions;
 }
 
@@ -35,6 +36,10 @@ export interface GSAPTween {
 export interface GSAPTimeline extends GSAPTween {
 	to: (target: object, vars: object, position?: string | number) => GSAPTimeline;
 	from: (target: object, vars: object, position?: string | number) => GSAPTimeline;
+	add: (child: GSAPTimeline | GSAPTween, position?: string | number) => GSAPTimeline;
+	progress: () => number;
+	duration: () => number;
+	timeScale: (value?: number) => number | GSAPTimeline;
 }
 
 /**

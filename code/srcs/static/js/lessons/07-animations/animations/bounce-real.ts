@@ -2,110 +2,81 @@ import type { AnimationContext, GSAPTimeline } from './types.ts';
 
 /**
  * Animation Bounce Real - rebond realiste avec deformation (squash & stretch)
+ * Optimisee pour etre fluide sur cubes et modeles GLB
  */
 export function animateBounceReal(ctx: AnimationContext): GSAPTimeline {
-	const centerCube = ctx.cubes[2];
 	const duration = ctx.options.duration;
+	const isSingleTarget = ctx.cubes.length === 1;
 
 	const timeline = gsap.timeline({
 		repeat: ctx.options.repeat,
 		yoyo: ctx.options.yoyo
 	});
 
-	// Phase 1: Anticipation - le cube s'ecrase avant de sauter
-	timeline.to(centerCube.scale, {
-		x: 1.3,
-		y: 0.7,
-		z: 1.3,
-		duration: duration * 0.1,
-		ease: 'power2.in'
-	});
+	// Pour chaque objet, creer une animation fluide
+	ctx.cubes.forEach((obj, index) => {
+		const delay = isSingleTarget ? 0 : index * 0.08;
+		const t = duration;
+		const startY = obj.position.y; // Position Y initiale
+		const jumpHeight = 3;
 
-	// Phase 2: Depart - etirement vertical pendant la montee
-	timeline.to(centerCube.scale, {
-		x: 0.8,
-		y: 1.4,
-		z: 0.8,
-		duration: duration * 0.1,
-		ease: 'power2.out'
-	}, '>');
+		// Timeline individuelle pour synchroniser scale + position
+		const objTl = gsap.timeline();
 
-	timeline.to(centerCube.position, {
-		y: 3,
-		duration: duration * 0.3,
-		ease: 'power2.out'
-	}, '<');
+		// Phase 1: Anticipation (squash)
+		objTl.to(obj.scale, {
+			x: 1.3, y: 0.7, z: 1.3,
+			duration: t * 0.08,
+			ease: 'power2.in'
+		});
 
-	// Phase 3: Sommet - forme normale en l'air
-	timeline.to(centerCube.scale, {
-		x: 1,
-		y: 1,
-		z: 1,
-		duration: duration * 0.1,
-		ease: 'power1.out'
-	});
+		// Phase 2: Saut (stretch + montee)
+		objTl.to(obj.scale, {
+			x: 0.75, y: 1.4, z: 0.75,
+			duration: t * 0.15,
+			ease: 'power2.out'
+		});
+		objTl.to(obj.position, {
+			y: startY + jumpHeight,
+			duration: t * 0.25,
+			ease: 'power2.out'
+		}, '<');
 
-	// Phase 4: Chute - etirement vers le bas
-	timeline.to(centerCube.scale, {
-		x: 0.85,
-		y: 1.3,
-		z: 0.85,
-		duration: duration * 0.15,
-		ease: 'power1.in'
-	});
+		// Phase 3: Sommet (retour normal)
+		objTl.to(obj.scale, {
+			x: 1, y: 1, z: 1,
+			duration: t * 0.1,
+			ease: 'sine.out'
+		});
 
-	timeline.to(centerCube.position, {
-		y: 0,
-		duration: duration * 0.25,
-		ease: 'power2.in'
-	}, '<');
+		// Phase 4: Chute (stretch vers bas)
+		objTl.to(obj.scale, {
+			x: 0.8, y: 1.25, z: 0.8,
+			duration: t * 0.1,
+			ease: 'sine.in'
+		});
+		objTl.to(obj.position, {
+			y: startY,
+			duration: t * 0.2,
+			ease: 'power2.in'
+		}, '<');
 
-	// Phase 5: Impact - ecrasement au sol
-	timeline.to(centerCube.scale, {
-		x: 1.5,
-		y: 0.5,
-		z: 1.5,
-		duration: duration * 0.08,
-		ease: 'power3.out'
-	});
+		// Phase 5: Impact (gros squash)
+		objTl.to(obj.scale, {
+			x: 1.4, y: 0.6, z: 1.4,
+			duration: t * 0.05,
+			ease: 'power3.out'
+		});
 
-	// Phase 6: Rebond leger
-	timeline.to(centerCube.position, {
-		y: 0.8,
-		duration: duration * 0.15,
-		ease: 'power2.out'
-	});
+		// Phase 6: Retour elastique
+		objTl.to(obj.scale, {
+			x: 1, y: 1, z: 1,
+			duration: t * 0.17,
+			ease: 'elastic.out(1, 0.4)'
+		});
 
-	timeline.to(centerCube.scale, {
-		x: 0.9,
-		y: 1.15,
-		z: 0.9,
-		duration: duration * 0.1,
-		ease: 'power1.out'
-	}, '<');
-
-	// Phase 7: Retour au sol
-	timeline.to(centerCube.position, {
-		y: 0,
-		duration: duration * 0.12,
-		ease: 'power2.in'
-	});
-
-	timeline.to(centerCube.scale, {
-		x: 1.2,
-		y: 0.7,
-		z: 1.2,
-		duration: duration * 0.06,
-		ease: 'power2.out'
-	});
-
-	// Phase 8: Retour forme normale
-	timeline.to(centerCube.scale, {
-		x: 1,
-		y: 1,
-		z: 1,
-		duration: duration * 0.1,
-		ease: 'elastic.out(1, 0.5)'
+		// Ajouter au timeline principal avec delay
+		timeline.add(objTl, delay);
 	});
 
 	return timeline;

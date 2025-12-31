@@ -12,9 +12,13 @@ export interface UIElements {
 	easingSelect: HTMLSelectElement;
 	repeatToggle: HTMLInputElement;
 	yoyoToggle: HTMLInputElement;
+	speed: HTMLInputElement;
+	speedValue: HTMLElement;
 	pauseBtn: HTMLButtonElement;
 	resumeBtn: HTMLButtonElement;
 	reverseBtn: HTMLButtonElement;
+	progressBar: HTMLElement;
+	glbModeToggle: HTMLInputElement;
 }
 
 /**
@@ -30,9 +34,13 @@ export function getUIElements(): UIElements {
 		easingSelect: DOM.element('easing-select') as HTMLSelectElement,
 		repeatToggle: DOM.input('repeat-toggle'),
 		yoyoToggle: DOM.input('yoyo-toggle'),
+		speed: DOM.input('speed'),
+		speedValue: DOM.element('speed-value'),
 		pauseBtn: DOM.button('pause-btn'),
 		resumeBtn: DOM.button('resume-btn'),
-		reverseBtn: DOM.button('reverse-btn')
+		reverseBtn: DOM.button('reverse-btn'),
+		progressBar: DOM.element('progress-bar'),
+		glbModeToggle: DOM.input('glb-mode-toggle')
 	};
 }
 
