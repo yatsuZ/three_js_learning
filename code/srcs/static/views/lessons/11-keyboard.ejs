@@ -1,0 +1,78 @@
+<%- include('../partials/head', { title: '11 - Keyboard Controls' }) %>
+<body>
+	<div class="lesson-container">
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '11',
+			lessonTitle: 'Keyboard Controls',
+			docSlug: '11-keyboard',
+			headerContent: `
+				<div class="header-controls">
+					<span class="controls-hint">ZQSD/WASD + Espace/Shift</span>
+					<button id="reset-btn" class="btn-secondary">Reset Position</button>
+				</div>
+			`
+		}) %>
+		<canvas id="canvas"></canvas>
+
+		<!-- Panneau de controle -->
+		<div class="control-panel control-panel-overlay">
+			<h3>Controles</h3>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="glb-mode-toggle">
+					Mode Modele 3D
+				</label>
+			</div>
+
+			<div class="control-group">
+				<label for="speed">Vitesse</label>
+				<input type="range" id="speed" min="1" max="20" step="1" value="5">
+				<span id="speed-value">5</span>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="normalize-toggle" checked>
+					Normaliser diagonales
+				</label>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="boundaries-toggle" checked>
+					Limites de zone
+				</label>
+			</div>
+
+			<div class="control-group keyboard-display">
+				<h4>Touches actives</h4>
+				<div class="key-grid">
+					<div class="key-row">
+						<span id="key-z" class="key">Z</span>
+					</div>
+					<div class="key-row">
+						<span id="key-q" class="key">Q</span>
+						<span id="key-s" class="key">S</span>
+						<span id="key-d" class="key">D</span>
+					</div>
+					<div class="key-row">
+						<span id="key-space" class="key key-wide">Espace</span>
+						<span id="key-shift" class="key">Shift</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group position-display">
+				<h4>Position</h4>
+				<div>X: <span id="pos-x">0.00</span></div>
+				<div>Y: <span id="pos-y">0.00</span></div>
+				<div>Z: <span id="pos-z">0.00</span></div>
+			</div>
+		</div>
+	</div>
+
+	<%- include('../partials/importmap') %>
+	<script type="module" src="/static/js/lessons/11-keyboard/index.js"></script>
+</body>
+</html>

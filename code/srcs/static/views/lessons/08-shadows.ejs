@@ -1,0 +1,80 @@
+<%- include('../partials/head', { title: '08 - Shadows' }) %>
+<body>
+	<div class="lesson-container">
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '08',
+			lessonTitle: 'Shadows',
+			docSlug: '08-shadows',
+			headerContent: `
+				<div class="header-controls">
+					<label class="toggle-label">
+						<input type="checkbox" id="shadows-toggle" checked>
+						Ombres
+					</label>
+					<label class="toggle-label">
+						<input type="checkbox" id="helper-toggle">
+						Helper
+					</label>
+				</div>
+			`
+		}) %>
+		<canvas id="canvas"></canvas>
+
+		<!-- Panneau de controle -->
+		<div class="control-panel control-panel-overlay">
+			<h3>Controles Ombres</h3>
+
+			<div class="control-group">
+				<label for="shadow-type">Type de Shadow Map</label>
+				<select id="shadow-type">
+					<option value="basic">Basic (rapide)</option>
+					<option value="pcf" selected>PCF (standard)</option>
+					<option value="pcfsoft">PCF Soft (doux)</option>
+					<option value="vsm">VSM</option>
+				</select>
+			</div>
+
+			<div class="control-group">
+				<label for="shadow-quality">Qualite</label>
+				<select id="shadow-quality">
+					<option value="256">256 (basse)</option>
+					<option value="512">512</option>
+					<option value="1024" selected>1024</option>
+					<option value="2048">2048 (haute)</option>
+				</select>
+			</div>
+
+			<div class="control-group">
+				<label for="light-x">Position Lumiere X</label>
+				<input type="range" id="light-x" min="-10" max="10" step="0.5" value="5">
+				<span id="light-x-value">5</span>
+			</div>
+
+			<div class="control-group">
+				<label for="light-y">Position Lumiere Y</label>
+				<input type="range" id="light-y" min="1" max="20" step="0.5" value="10">
+				<span id="light-y-value">10</span>
+			</div>
+
+			<div class="control-group">
+				<label for="light-z">Position Lumiere Z</label>
+				<input type="range" id="light-z" min="-10" max="10" step="0.5" value="5">
+				<span id="light-z-value">5</span>
+			</div>
+
+			<div class="control-group">
+				<label for="shadow-bias">Shadow Bias</label>
+				<input type="range" id="shadow-bias" min="-0.01" max="0.01" step="0.0001" value="-0.0001">
+				<span id="shadow-bias-value">-0.0001</span>
+			</div>
+
+			<div class="control-group">
+				<button id="reset-btn" class="btn-secondary">Reset</button>
+			</div>
+		</div>
+	</div>
+
+	<%- include('../partials/importmap') %>
+	<script type="module" src="/static/js/lessons/08-shadows/index.js"></script>
+</body>
+</html>
