@@ -253,12 +253,19 @@ button.btn-primary:hover {
 }
 
 .btn-danger {
-	background: #ff6b6b;
-	color: #fff;
+	padding: 0.5rem 1rem;
+	background: transparent;
+	color: #ff6b6b;
+	border: 1px solid #ff6b6b;
+	border-radius: 4px;
+	font-size: 0.9rem;
+	cursor: pointer;
+	transition: all 0.2s;
 }
 
 .btn-danger:hover {
-	background: #ee5a5a;
+	background: #ff6b6b;
+	color: #1a1a2e;
 }
 
 /* Header controls */

@@ -9,6 +9,8 @@ export interface ControlsOptions {
 	enablePan?: boolean;
 	minDistance?: number;
 	maxDistance?: number;
+	maxPolarAngle?: number;
+	minPolarAngle?: number;
 }
 
 const DEFAULT_OPTIONS: ControlsOptions = {
@@ -30,6 +32,13 @@ export function createOrbitControls(ctx: SceneContext, options: ControlsOptions 
 	controls.enablePan = config.enablePan!;
 	controls.minDistance = config.minDistance!;
 	controls.maxDistance = config.maxDistance!;
+
+	if (config.maxPolarAngle !== undefined) {
+		controls.maxPolarAngle = config.maxPolarAngle;
+	}
+	if (config.minPolarAngle !== undefined) {
+		controls.minPolarAngle = config.minPolarAngle;
+	}
 
 	return controls;
 }

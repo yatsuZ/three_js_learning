@@ -13,6 +13,6 @@
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["srcs/static/js/**/*.ts"],
+  "include": ["srcs/static/js/**/*.ts", "srcs/static/js/types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

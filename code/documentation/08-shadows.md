@@ -37,6 +37,71 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Ombres douces
 
 ---
 
+## Comment fonctionnent les Shadow Maps ?
+
+### Principe de base
+
+Les shadow maps fonctionnent en **2 passes** :
+
+1. **Passe 1** : Rendu de la scène du point de vue de la lumière dans une texture (depth map)
+2. **Passe 2** : Pour chaque pixel, comparer sa profondeur avec celle stockée dans la shadow map
+
+```
+Pour chaque pixel :
+   depth_pixel > depth_shadowmap ? → OMBRE : LUMIÈRE
+```
+
+### Pourquoi Basic, PCF et PCFSoft se ressemblent ?
+
+Ces 3 types utilisent la même technique de base : **depth comparison** (comparaison de profondeur).
+
+La seule différence est le **nombre d'échantillons** pour adoucir les bords :
+
+| Type | Échantillons | Résultat |
+|------|--------------|----------|
+| Basic | 1 | Bords très nets, pixelisés |
+| PCF | ~4 | Légèrement adouci |
+| PCFSoft | ~9+ | Dégradé plus progressif |
+
+Pour voir la différence, baisse la qualité à **256** ou **512** - l'aliasing sera plus visible.
+
+### Pourquoi VSM est complètement différent ?
+
+**VSM (Variance Shadow Map)** utilise une approche statistique :
+
+Au lieu de stocker juste la profondeur, il stocke :
+- La **moyenne** des profondeurs
+- La **variance** (écart-type²)
+
+Puis utilise l'inégalité de **Chebyshev** pour calculer la probabilité qu'un pixel soit dans l'ombre.
+
+#### Avantages de VSM
+
+- Ombres naturellement très douces
+- Peut être flouté (blur) efficacement
+- Pas de "shadow acne" (artefacts en lignes)
+
+#### Inconvénients de VSM
+
+- **Light bleeding** : la lumière "fuit" à travers les objets fins
+- Plus gourmand en mémoire (stocke 2 valeurs au lieu d'1)
+- Peut créer des halos lumineux indésirables
+
+### Visualisation
+
+```
+BasicShadowMap:     PCFSoftShadowMap:     VSMShadowMap:
++------------+      +------------+        +------------+
+|████████    |      |████████    |        |████▓▓▒▒    |
+|████████    |      |███████▓    |        |███▓▓▒▒░    |
+|████████    |      |██████▓▓    |        |██▓▓▒▒░░    |
+|            |      |█████▓▓░    |        |█▓▓▒▒░░     |
++------------+      +------------+        +------------+
+  Bords nets         Léger dégradé         Très flou
+```
+
+---
+
 ## Étape 2 : Configurer la lumière
 
 Seules certaines lumières peuvent projeter des ombres :

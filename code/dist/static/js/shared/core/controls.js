@@ -17,6 +17,12 @@ export function createOrbitControls(ctx, options = {}) {
     controls.enablePan = config.enablePan;
     controls.minDistance = config.minDistance;
     controls.maxDistance = config.maxDistance;
+    if (config.maxPolarAngle !== undefined) {
+        controls.maxPolarAngle = config.maxPolarAngle;
+    }
+    if (config.minPolarAngle !== undefined) {
+        controls.minPolarAngle = config.minPolarAngle;
+    }
     return controls;
 }
 // Creer un cube wireframe pour delimiter une zone

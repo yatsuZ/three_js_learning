@@ -1,0 +1,142 @@
+<%- include('../partials/head', { title: '12 - Sandbox Final' }) %>
+<body>
+	<div class="lesson-container">
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '12',
+			lessonTitle: 'Sandbox Final',
+			docSlug: '12-sandbox',
+			headerContent: `
+				<div class="header-controls">
+					<span class="cube-counter">Objets: <span id="object-count">0</span>/<span id="max-objects">30</span></span>
+					<label class="toggle-label">
+						<input type="checkbox" id="sound-toggle" checked>
+						Sons
+					</label>
+				</div>
+			`
+		}) %>
+		<canvas id="canvas"></canvas>
+
+		<!-- Panneau de controle -->
+		<div class="control-panel control-panel-overlay">
+			<h3>Sandbox - Tout en un</h3>
+
+			<!-- Mode -->
+			<div class="control-group">
+				<label for="mode">Mode</label>
+				<select id="mode">
+					<option value="physics">Physique</option>
+					<option value="particles">Particules</option>
+					<option value="player">Joueur (ZQSD)</option>
+				</select>
+			</div>
+
+			<!-- Section Physique -->
+			<div id="physics-section">
+				<h4>Physique</h4>
+				<div class="control-group">
+					<label for="shape">Forme</label>
+					<select id="shape">
+						<option value="box">Cube</option>
+						<option value="sphere">Sphere</option>
+						<option value="cylinder">Cylindre</option>
+					</select>
+				</div>
+
+				<div class="control-group">
+					<label>
+						<input type="checkbox" id="breakable-toggle">
+						Cassable
+					</label>
+				</div>
+
+				<div class="control-group">
+					<label for="restitution">Rebond</label>
+					<input type="range" id="restitution" min="0" max="1" step="0.1" value="0.5">
+				</div>
+			</div>
+
+			<!-- Section Particules -->
+			<div id="particles-section" style="display: none;">
+				<h4>Particules</h4>
+				<div class="control-group">
+					<label for="particle-preset">Preset</label>
+					<select id="particle-preset">
+						<option value="galaxy">Galaxie</option>
+						<option value="snow">Neige</option>
+						<option value="fire">Feu</option>
+						<option value="fountain">Fontaine</option>
+					</select>
+				</div>
+
+				<div class="control-group">
+					<label for="particle-count">Nombre</label>
+					<input type="range" id="particle-count" min="500" max="5000" step="500" value="2000">
+					<span id="particle-count-value">2000</span>
+				</div>
+			</div>
+
+			<!-- Section Joueur -->
+			<div id="player-section" style="display: none;">
+				<h4>Joueur</h4>
+				<div class="control-group">
+					<label for="player-speed">Vitesse</label>
+					<input type="range" id="player-speed" min="1" max="10" step="1" value="5">
+					<span id="player-speed-value">5</span>
+				</div>
+
+				<div class="keyboard-display">
+					<div class="key-grid">
+						<div class="key-row">
+							<div class="key" id="key-z">Z</div>
+						</div>
+						<div class="key-row">
+							<div class="key" id="key-q">Q</div>
+							<div class="key" id="key-s">S</div>
+							<div class="key" id="key-d">D</div>
+						</div>
+						<div class="key-row">
+							<div class="key key-wide" id="key-space">SPACE</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="position-display">
+					Position: (<span id="pos-x">0</span>, <span id="pos-y">0</span>, <span id="pos-z">0</span>)
+				</div>
+			</div>
+
+			<!-- Ombres -->
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="shadows-toggle" checked>
+					Ombres
+				</label>
+			</div>
+
+			<!-- Boutons -->
+			<div class="control-buttons">
+				<button id="spawn-btn" class="btn-primary">Spawn</button>
+				<button id="explosion-btn" class="btn-secondary">Explosion</button>
+				<button id="export-btn" class="btn-secondary">Export GLB</button>
+				<button id="clear-btn" class="btn-danger">Clear</button>
+				<button id="reset-btn" class="btn-secondary">Reset</button>
+			</div>
+
+			<p class="light-info">Clic canvas = spawn | ZQSD = deplacer</p>
+		</div>
+	</div>
+
+	<!-- Import map avec Cannon.js -->
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+			"cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+		}
+	}
+	</script>
+	<script type="module" src="/static/js/lessons/12-sandbox/index.js"></script>
+</body>
+</html>

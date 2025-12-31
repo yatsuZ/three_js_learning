@@ -1,0 +1,99 @@
+<%- include('../partials/head', { title: '10 - Physics' }) %>
+<body>
+	<div class="lesson-container">
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '10',
+			lessonTitle: 'Physics',
+			docSlug: '10-physics',
+			headerContent: `
+				<div class="header-controls">
+					<span class="cube-counter">Objets: <span id="object-count">0</span>/<span id="max-objects">50</span></span>
+				</div>
+			`
+		}) %>
+		<canvas id="canvas"></canvas>
+
+		<!-- Panneau de controle -->
+		<div class="control-panel control-panel-overlay">
+			<h3>Physique Cannon.js</h3>
+
+			<div class="control-group">
+				<label for="shape">Forme</label>
+				<select id="shape">
+					<option value="box">Cube</option>
+					<option value="sphere">Sphere</option>
+					<option value="cylinder">Cylindre</option>
+				</select>
+			</div>
+
+			<div class="control-group">
+				<label for="mass">Masse</label>
+				<input type="range" id="mass" min="0.1" max="10" step="0.1" value="1">
+				<span id="mass-value">1</span>
+			</div>
+
+			<div class="control-group">
+				<label for="restitution">Rebond</label>
+				<input type="range" id="restitution" min="0" max="1" step="0.1" value="0.5">
+				<span id="restitution-value">0.5</span>
+			</div>
+
+			<div class="control-group">
+				<label for="friction">Friction</label>
+				<input type="range" id="friction" min="0" max="1" step="0.1" value="0.3">
+				<span id="friction-value">0.3</span>
+			</div>
+
+			<div class="control-group">
+				<label for="gravity">Gravite</label>
+				<input type="range" id="gravity" min="-20" max="0" step="1" value="-10">
+				<span id="gravity-value">-10</span>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="debug-toggle">
+					Afficher debug
+				</label>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="sound-toggle" checked>
+					Sons de collision
+				</label>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="breakable-toggle">
+					Objets cassables
+				</label>
+			</div>
+
+			<div class="control-buttons">
+				<button id="spawn-btn" class="btn-primary">Spawn Objet</button>
+				<button id="rain-btn" class="btn-secondary">Pluie d'objets</button>
+				<button id="export-btn" class="btn-secondary">Export GLB</button>
+				<button id="clear-btn" class="btn-danger">Tout supprimer</button>
+				<button id="reset-btn" class="btn-secondary">Reset</button>
+			</div>
+
+			<p class="light-info">Clic sur le canvas pour spawn</p>
+			<p class="light-info">Objets cassables: se brisent a l'impact</p>
+		</div>
+	</div>
+
+	<!-- Import map avec Cannon.js -->
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+			"cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+		}
+	}
+	</script>
+	<script type="module" src="/static/js/lessons/10-physics/index.js"></script>
+</body>
+</html>

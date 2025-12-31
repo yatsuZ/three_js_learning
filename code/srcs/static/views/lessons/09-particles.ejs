@@ -1,0 +1,78 @@
+<%- include('../partials/head', { title: '09 - Particles' }) %>
+<body>
+	<div class="lesson-container">
+		<%- include('../partials/lesson-header', {
+			lessonNumber: '09',
+			lessonTitle: 'Particles',
+			docSlug: '09-particles',
+			headerContent: `
+				<div class="header-controls">
+					<span class="cube-counter">Particules: <span id="particle-count">1000</span></span>
+				</div>
+			`
+		}) %>
+		<canvas id="canvas"></canvas>
+
+		<!-- Panneau de controle -->
+		<div class="control-panel control-panel-overlay">
+			<h3>Systeme de Particules</h3>
+
+			<div class="control-group">
+				<label for="preset">Preset</label>
+				<select id="preset">
+					<option value="galaxy">Galaxie</option>
+					<option value="snow">Neige</option>
+					<option value="fire">Feu</option>
+					<option value="fountain">Fontaine</option>
+					<option value="explosion">Explosion</option>
+				</select>
+			</div>
+
+			<div class="control-group">
+				<label for="count">Nombre de particules</label>
+				<input type="range" id="count" min="100" max="10000" step="100" value="1000">
+				<span id="count-value">1000</span>
+			</div>
+
+			<div class="control-group">
+				<label for="size">Taille</label>
+				<input type="range" id="size" min="0.01" max="0.5" step="0.01" value="0.1">
+				<span id="size-value">0.1</span>
+			</div>
+
+			<div class="control-group">
+				<label for="color">Couleur</label>
+				<input type="color" id="color" value="#00d9ff">
+			</div>
+
+			<div class="control-group">
+				<label for="speed">Vitesse animation</label>
+				<input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+				<span id="speed-value">1</span>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="rotate-toggle" checked>
+					Rotation auto
+				</label>
+			</div>
+
+			<div class="control-group">
+				<label>
+					<input type="checkbox" id="transparent-toggle" checked>
+					Transparence
+				</label>
+			</div>
+
+			<div class="control-buttons">
+				<button id="trigger-btn" class="btn-primary">Trigger Effect</button>
+				<button id="reset-btn" class="btn-secondary">Reset</button>
+			</div>
+		</div>
+	</div>
+
+	<%- include('../partials/importmap') %>
+	<script type="module" src="/static/js/lessons/09-particles/index.js"></script>
+</body>
+</html>
