@@ -2,6 +2,9 @@
 export { createScene, setupResize } from './core/scene.ts';
 export type { SceneOptions, SceneContext } from './core/scene.ts';
 
+export { LessonBase } from './core/lesson.ts';
+export type { LessonConfig } from './core/lesson.ts';
+
 export { Cube } from './core/cube.ts';
 export type { CubeOptions } from './core/cube.ts';
 
@@ -25,3 +28,10 @@ export type { AppConfig } from './config/loader.ts';
 
 // UI
 export { setupCubeControls, updateDisplay } from './ui/cubeControls.ts';
+
+// Utils
+export { Logger } from './utils/logger.ts';
+export { fetchWithRetry, safeFetch } from './utils/fetch.ts';
+export type { FetchOptions } from './utils/fetch.ts';
+export { getElement, getElementOrNull, DOM } from './utils/dom.ts';
+export { DOMElementNotFoundError, DOMElementTypeError } from './utils/dom.ts';

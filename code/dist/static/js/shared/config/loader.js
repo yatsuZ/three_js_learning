@@ -7,23 +7,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { fetchWithRetry } from "../utils/fetch.js";
+import { Logger } from "../utils/logger.js";
 const DEFAULT_CONFIG = {
     maxCubes: 1000
 };
 let config = Object.assign({}, DEFAULT_CONFIG);
+/**
+ * Charge la configuration depuis l'API avec retry automatique
+ */
 export function loadConfig() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
         try {
-            const response = yield fetch('/api/config');
-            const data = yield response.json();
+            const data = yield fetchWithRetry('/api/config', {
+                timeout: 3000,
+                retries: 2
+            });
             config = {
                 maxCubes: (_a = data.maxCubes) !== null && _a !== void 0 ? _a : DEFAULT_CONFIG.maxCubes
             };
-            console.log(`Config chargee: MAX_CUBES = ${config.maxCubes}`);
+            Logger.success(`Config chargee: MAX_CUBES = ${config.maxCubes}`);
         }
         catch (error) {
-            console.warn('Impossible de charger la config, utilisation des valeurs par defaut');
+            Logger.warn('Impossible de charger la config, utilisation des valeurs par defaut');
             config = Object.assign({}, DEFAULT_CONFIG);
         }
         return config;

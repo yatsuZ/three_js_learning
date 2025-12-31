@@ -5,9 +5,27 @@
 
 declare const marked: { parse: (markdown: string) => string };
 
+// Logger simple pour le module docs (standalone)
+const Logger = {
+	info: (...args: unknown[]) => console.log('%c[INFO]', 'color: #2196F3', ...args),
+	error: (...args: unknown[]) => console.error('%c[ERROR]', 'color: #F44336', ...args),
+	success: (...args: unknown[]) => console.log('%c[OK]', 'color: #4CAF50', ...args)
+};
+
+// Configuration fetch
+const FETCH_TIMEOUT = 5000;
+const FETCH_RETRIES = 2;
+
+// Helper DOM securise
+function getElement(id: string): HTMLElement {
+	const el = document.getElementById(id);
+	if (!el) throw new Error(`Element #${id} introuvable`);
+	return el;
+}
+
 // Elements DOM
-const nav = document.getElementById('docs-nav') as HTMLElement;
-const content = document.getElementById('docs-content') as HTMLElement;
+const nav = getElement('docs-nav');
+const content = getElement('docs-content');
 
 // Recuperer le filename depuis l'attribut data du body
 const initialFile = document.body.dataset.initialFile || '';
@@ -32,15 +50,53 @@ interface DocContentResponse {
 	content: string;
 }
 
+/**
+ * Fetch avec timeout
+ */
+async function fetchWithTimeout<T>(url: string, timeout: number = FETCH_TIMEOUT): Promise<T> {
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+	try {
+		const response = await fetch(url, { signal: controller.signal });
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}`);
+		}
+		return await response.json() as T;
+	} finally {
+		clearTimeout(timeoutId);
+	}
+}
+
+/**
+ * Fetch avec retry automatique
+ */
+async function fetchWithRetry<T>(url: string, retries: number = FETCH_RETRIES): Promise<T> {
+	let lastError: Error | null = null;
+
+	for (let attempt = 0; attempt <= retries; attempt++) {
+		try {
+			return await fetchWithTimeout<T>(url);
+		} catch (error) {
+			lastError = error instanceof Error ? error : new Error(String(error));
+			if (attempt < retries) {
+				await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+			}
+		}
+	}
+
+	throw lastError;
+}
+
 // Charger la liste des fichiers de documentation
 async function loadDocsList(): Promise<void> {
 	try {
-		const response = await fetch('/api/docs');
-		const data: DocsListResponse = await response.json();
+		const data = await fetchWithRetry<DocsListResponse>('/api/docs');
 
 		if (data.success) {
 			renderNavigation(data.categories);
 			setupNavigationListeners();
+			Logger.success('Documentation chargee');
 
 			if (initialFile) {
 				await loadDoc(initialFile);
@@ -48,7 +104,7 @@ async function loadDocsList(): Promise<void> {
 		}
 	} catch (error) {
 		nav.innerHTML = '<p class="error">Erreur de chargement</p>';
-		console.error('Erreur chargement liste docs:', error);
+		Logger.error('Erreur chargement liste docs:', error);
 	}
 }
 
@@ -103,18 +159,18 @@ async function loadDoc(filename: string): Promise<void> {
 	content.innerHTML = '<p class="loading">Chargement...</p>';
 
 	try {
-		const response = await fetch(`/api/docs/${filename}`);
-		const data: DocContentResponse = await response.json();
+		const data = await fetchWithRetry<DocContentResponse>(`/api/docs/${filename}`);
 
 		if (data.success) {
 			content.innerHTML = marked.parse(data.content);
 			content.scrollTop = 0;
+			Logger.info(`Document charge: ${filename}`);
 		} else {
 			content.innerHTML = '<p class="error">Fichier non trouve</p>';
 		}
 	} catch (error) {
 		content.innerHTML = '<p class="error">Erreur de chargement</p>';
-		console.error('Erreur chargement doc:', error);
+		Logger.error('Erreur chargement doc:', error);
 	}
 }
 
@@ -131,4 +187,4 @@ window.addEventListener('popstate', async () => {
 
 // Initialisation
 loadDocsList();
-console.log('Documentation viewer loaded!');
+Logger.success('Documentation viewer initialise');

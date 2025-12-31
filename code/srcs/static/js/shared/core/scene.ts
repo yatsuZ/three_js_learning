@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { DOM } from '../utils/dom.ts';
 
 export interface SceneOptions {
 	backgroundColor?: string;
@@ -23,7 +24,7 @@ export function createScene(options: SceneOptions = {}): SceneContext {
 	const config = { ...DEFAULT_OPTIONS, ...options };
 
 	// Canvas
-	const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+	const canvas = DOM.canvas('canvas');
 
 	// Scene
 	const scene = new THREE.Scene();

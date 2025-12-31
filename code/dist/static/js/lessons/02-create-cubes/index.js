@@ -7,27 +7,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { createScene, setupResize, CubeManager, loadConfig, setupCubeControls } from "../../shared/index.js";
-// === INIT ===
-function init() {
-    return __awaiter(this, void 0, void 0, function* () {
-        // Charger la config depuis l'API
-        yield loadConfig();
-        // Setup scene
-        const ctx = createScene({ backgroundColor: '#1a1a2e' });
-        setupResize(ctx);
-        // Cube manager (sans lumières)
-        const cubeManager = new CubeManager(ctx.scene, { useLighting: false });
-        // Setup UI
-        setupCubeControls(cubeManager);
-        // Animation
-        function animate() {
-            requestAnimationFrame(animate);
-            cubeManager.updateAll();
-            ctx.renderer.render(ctx.scene, ctx.camera);
-        }
-        animate();
-        console.log('Lesson 02 - Create Cubes loaded!');
-    });
+import { LessonBase, CubeManager, loadConfig, setupCubeControls } from "../../shared/index.js";
+/**
+ * Lecon 02 - Creation dynamique de cubes
+ */
+class Lesson02 extends LessonBase {
+    constructor() {
+        const config = {
+            id: '02',
+            name: 'Create Cubes'
+        };
+        super(config);
+    }
+    setup() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Charger la config depuis l'API
+            yield loadConfig();
+            // Cube manager (sans lumieres)
+            this.cubeManager = new CubeManager(this.scene, { useLighting: false });
+            // Setup UI avec les controles
+            setupCubeControls(this.cubeManager);
+            // Cleanup du CubeManager quand la lecon s'arrete
+            this.onDispose(() => {
+                this.cubeManager.clearAll();
+            });
+        });
+    }
+    update(_delta) {
+        this.cubeManager.updateAll();
+    }
 }
-init();
+// Demarrer la lecon
+const lesson = new Lesson02();
+lesson.start();

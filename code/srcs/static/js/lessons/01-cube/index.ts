@@ -1,5 +1,5 @@
-import { createScene, setupResize, CubeManager, addLights } from '../../shared/index.ts';
-import type { LightObjects } from '../../shared/index.ts';
+import { LessonBase, CubeManager, addLights, DOM } from '../../shared/index.ts';
+import type { LessonConfig, LightObjects } from '../../shared/index.ts';
 
 // Configuration des cubes
 const CUBES_CONFIG = [
@@ -8,79 +8,96 @@ const CUBES_CONFIG = [
 	{ color: '#4ecdc4', wireframe: false, transparent: true, opacity: 0.5, position: { x: 2.5, y: 0, z: 0 }, rotationSpeed: { x: 0, y: 0.02, z: 0.01 } }
 ];
 
-// === INIT ===
-const ctx = createScene({ backgroundColor: '#1a1a2e' });
-setupResize(ctx);
+/**
+ * Lecon 01 - Introduction aux cubes 3D
+ */
+class Lesson01 extends LessonBase {
+	private cubeManager!: CubeManager;
+	private lights: LightObjects | null = null;
+	private useLighting = false;
 
-let cubeManager = new CubeManager(ctx.scene, { useLighting: false });
-let lights: LightObjects | null = null;
-let useLighting = false;
-
-// Creer les cubes (avec option de restaurer les rotations)
-function createCubes(savedRotations?: Array<{ x: number; y: number; z: number }>): void {
-	cubeManager.clearAll();
-	cubeManager = new CubeManager(ctx.scene, {
-		useLighting: useLighting,
-		metalness: 0.3,
-		roughness: 0.7
-	});
-
-	CUBES_CONFIG.forEach((config, index) => {
-		const cube = cubeManager.createSingleCube({ ...config, size: 0.8 });
-
-		// Restaurer la rotation si disponible
-		if (savedRotations && savedRotations[index]) {
-			cube.mesh.rotation.x = savedRotations[index].x;
-			cube.mesh.rotation.y = savedRotations[index].y;
-			cube.mesh.rotation.z = savedRotations[index].z;
-		}
-	});
-}
-
-// Toggle lumieres
-function toggleLighting(enabled: boolean): void {
-	// Sauvegarder les rotations actuelles
-	const savedRotations = cubeManager.getCubes().map(cube => ({
-		x: cube.mesh.rotation.x,
-		y: cube.mesh.rotation.y,
-		z: cube.mesh.rotation.z
-	}));
-
-	useLighting = enabled;
-
-	if (enabled && !lights) {
-		// Lumieres plus brillantes
-		lights = addLights(ctx.scene, {
-			ambient: { color: '#ffffff', intensity: 1 },
-			point: { color: '#ffffff', intensity: 2, distance: 100, position: { x: 5, y: 5, z: 5 } },
-			directional: { color: '#ffffff', intensity: 1.5, position: { x: -5, y: 10, z: 5 } }
-		});
-	} else if (!enabled && lights) {
-		if (lights.ambient) ctx.scene.remove(lights.ambient);
-		if (lights.point) ctx.scene.remove(lights.point);
-		if (lights.directional) ctx.scene.remove(lights.directional);
-		lights = null;
+	constructor() {
+		const config: LessonConfig = {
+			id: '01',
+			name: 'Cube 3D'
+		};
+		super(config);
 	}
 
-	// Recreer les cubes avec le bon materiau ET restaurer les rotations
-	createCubes(savedRotations);
+	protected setup(): void {
+		// Creer les cubes initiaux
+		this.cubeManager = new CubeManager(this.scene, { useLighting: false });
+		this.createCubes();
+
+		// Setup UI - toggle lumieres
+		const lightingToggle = DOM.input('lighting-toggle');
+		this.addEventListener(lightingToggle, 'change', () => {
+			this.toggleLighting(lightingToggle.checked);
+		});
+
+		// Cleanup
+		this.onDispose(() => {
+			this.cubeManager.clearAll();
+			if (this.lights) {
+				if (this.lights.ambient) this.scene.remove(this.lights.ambient);
+				if (this.lights.point) this.scene.remove(this.lights.point);
+				if (this.lights.directional) this.scene.remove(this.lights.directional);
+			}
+		});
+	}
+
+	protected update(_delta: number): void {
+		this.cubeManager.updateAll();
+	}
+
+	private createCubes(savedRotations?: Array<{ x: number; y: number; z: number }>): void {
+		this.cubeManager.clearAll();
+		this.cubeManager = new CubeManager(this.scene, {
+			useLighting: this.useLighting,
+			metalness: 0.3,
+			roughness: 0.7
+		});
+
+		CUBES_CONFIG.forEach((config, index) => {
+			const cube = this.cubeManager.createSingleCube({ ...config, size: 0.8 });
+
+			// Restaurer la rotation si disponible
+			if (savedRotations && savedRotations[index]) {
+				cube.mesh.rotation.x = savedRotations[index].x;
+				cube.mesh.rotation.y = savedRotations[index].y;
+				cube.mesh.rotation.z = savedRotations[index].z;
+			}
+		});
+	}
+
+	private toggleLighting(enabled: boolean): void {
+		// Sauvegarder les rotations actuelles
+		const savedRotations = this.cubeManager.getCubes().map(cube => ({
+			x: cube.mesh.rotation.x,
+			y: cube.mesh.rotation.y,
+			z: cube.mesh.rotation.z
+		}));
+
+		this.useLighting = enabled;
+
+		if (enabled && !this.lights) {
+			this.lights = addLights(this.scene, {
+				ambient: { color: '#ffffff', intensity: 1 },
+				point: { color: '#ffffff', intensity: 2, distance: 100, position: { x: 5, y: 5, z: 5 } },
+				directional: { color: '#ffffff', intensity: 1.5, position: { x: -5, y: 10, z: 5 } }
+			});
+		} else if (!enabled && this.lights) {
+			if (this.lights.ambient) this.scene.remove(this.lights.ambient);
+			if (this.lights.point) this.scene.remove(this.lights.point);
+			if (this.lights.directional) this.scene.remove(this.lights.directional);
+			this.lights = null;
+		}
+
+		// Recreer les cubes avec le bon materiau ET restaurer les rotations
+		this.createCubes(savedRotations);
+	}
 }
 
-// Setup UI
-const lightingToggle = document.getElementById('lighting-toggle') as HTMLInputElement;
-lightingToggle.addEventListener('change', () => {
-	toggleLighting(lightingToggle.checked);
-});
-
-// Creer les cubes initiaux
-createCubes();
-
-// === ANIMATION ===
-function animate(): void {
-	requestAnimationFrame(animate);
-	cubeManager.updateAll();
-	ctx.renderer.render(ctx.scene, ctx.camera);
-}
-
-animate();
-console.log('Lesson 01 - Cubes loaded!');
+// Demarrer la lecon
+const lesson = new Lesson01();
+lesson.start();

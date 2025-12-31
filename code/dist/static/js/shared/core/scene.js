@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { DOM } from "../utils/dom.js";
 const DEFAULT_OPTIONS = {
     backgroundColor: '#1a1a2e',
     cameraPosition: { x: 0, y: 0, z: 8 },
@@ -7,7 +8,7 @@ const DEFAULT_OPTIONS = {
 export function createScene(options = {}) {
     const config = Object.assign(Object.assign({}, DEFAULT_OPTIONS), options);
     // Canvas
-    const canvas = document.getElementById('canvas');
+    const canvas = DOM.canvas('canvas');
     // Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(config.backgroundColor);

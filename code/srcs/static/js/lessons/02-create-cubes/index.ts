@@ -1,35 +1,46 @@
 import {
-	createScene,
-	setupResize,
+	LessonBase,
 	CubeManager,
 	loadConfig,
 	setupCubeControls
 } from '../../shared/index.ts';
+import type { LessonConfig } from '../../shared/index.ts';
 
-// === INIT ===
-async function init(): Promise<void> {
-	// Charger la config depuis l'API
-	await loadConfig();
+/**
+ * Lecon 02 - Creation dynamique de cubes
+ */
+class Lesson02 extends LessonBase {
+	private cubeManager!: CubeManager;
 
-	// Setup scene
-	const ctx = createScene({ backgroundColor: '#1a1a2e' });
-	setupResize(ctx);
-
-	// Cube manager (sans lumières)
-	const cubeManager = new CubeManager(ctx.scene, { useLighting: false });
-
-	// Setup UI
-	setupCubeControls(cubeManager);
-
-	// Animation
-	function animate(): void {
-		requestAnimationFrame(animate);
-		cubeManager.updateAll();
-		ctx.renderer.render(ctx.scene, ctx.camera);
+	constructor() {
+		const config: LessonConfig = {
+			id: '02',
+			name: 'Create Cubes'
+		};
+		super(config);
 	}
 
-	animate();
-	console.log('Lesson 02 - Create Cubes loaded!');
+	protected async setup(): Promise<void> {
+		// Charger la config depuis l'API
+		await loadConfig();
+
+		// Cube manager (sans lumieres)
+		this.cubeManager = new CubeManager(this.scene, { useLighting: false });
+
+		// Setup UI avec les controles
+		setupCubeControls(this.cubeManager);
+
+		// Cleanup du CubeManager quand la lecon s'arrete
+		this.onDispose(() => {
+			this.cubeManager.clearAll();
+		});
+	}
+
+	protected update(_delta: number): void {
+		this.cubeManager.updateAll();
+	}
 }
 
-init();
+// Demarrer la lecon
+const lesson = new Lesson02();
+lesson.start();

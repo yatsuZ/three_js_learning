@@ -1,5 +1,6 @@
 // Core
 export { createScene, setupResize } from "./core/scene.js";
+export { LessonBase } from "./core/lesson.js";
 export { Cube } from "./core/cube.js";
 export { CubeManager } from "./core/cubeManager.js";
 export { addLights } from "./core/lights.js";
@@ -10,3 +11,8 @@ export { loadGLTF, loadGLTFFromFile, fitModelToView } from "./core/modelLoader.j
 export { loadConfig, getConfig, getMaxCubes } from "./config/loader.js";
 // UI
 export { setupCubeControls, updateDisplay } from "./ui/cubeControls.js";
+// Utils
+export { Logger } from "./utils/logger.js";
+export { fetchWithRetry, safeFetch } from "./utils/fetch.js";
+export { getElement, getElementOrNull, DOM } from "./utils/dom.js";
+export { DOMElementNotFoundError, DOMElementTypeError } from "./utils/dom.js";

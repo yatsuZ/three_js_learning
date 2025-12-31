@@ -12,20 +12,75 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+// Logger simple pour le module docs (standalone)
+const Logger = {
+    info: (...args) => console.log('%c[INFO]', 'color: #2196F3', ...args),
+    error: (...args) => console.error('%c[ERROR]', 'color: #F44336', ...args),
+    success: (...args) => console.log('%c[OK]', 'color: #4CAF50', ...args)
+};
+// Configuration fetch
+const FETCH_TIMEOUT = 5000;
+const FETCH_RETRIES = 2;
+// Helper DOM securise
+function getElement(id) {
+    const el = document.getElementById(id);
+    if (!el)
+        throw new Error(`Element #${id} introuvable`);
+    return el;
+}
 // Elements DOM
-const nav = document.getElementById('docs-nav');
-const content = document.getElementById('docs-content');
+const nav = getElement('docs-nav');
+const content = getElement('docs-content');
 // Recuperer le filename depuis l'attribut data du body
 const initialFile = document.body.dataset.initialFile || '';
+/**
+ * Fetch avec timeout
+ */
+function fetchWithTimeout(url_1) {
+    return __awaiter(this, arguments, void 0, function* (url, timeout = FETCH_TIMEOUT) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        try {
+            const response = yield fetch(url, { signal: controller.signal });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return yield response.json();
+        }
+        finally {
+            clearTimeout(timeoutId);
+        }
+    });
+}
+/**
+ * Fetch avec retry automatique
+ */
+function fetchWithRetry(url_1) {
+    return __awaiter(this, arguments, void 0, function* (url, retries = FETCH_RETRIES) {
+        let lastError = null;
+        for (let attempt = 0; attempt <= retries; attempt++) {
+            try {
+                return yield fetchWithTimeout(url);
+            }
+            catch (error) {
+                lastError = error instanceof Error ? error : new Error(String(error));
+                if (attempt < retries) {
+                    yield new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+                }
+            }
+        }
+        throw lastError;
+    });
+}
 // Charger la liste des fichiers de documentation
 function loadDocsList() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch('/api/docs');
-            const data = yield response.json();
+            const data = yield fetchWithRetry('/api/docs');
             if (data.success) {
                 renderNavigation(data.categories);
                 setupNavigationListeners();
+                Logger.success('Documentation chargee');
                 if (initialFile) {
                     yield loadDoc(initialFile);
                 }
@@ -33,7 +88,7 @@ function loadDocsList() {
         }
         catch (error) {
             nav.innerHTML = '<p class="error">Erreur de chargement</p>';
-            console.error('Erreur chargement liste docs:', error);
+            Logger.error('Erreur chargement liste docs:', error);
         }
     });
 }
@@ -84,11 +139,11 @@ function loadDoc(filename) {
     return __awaiter(this, void 0, void 0, function* () {
         content.innerHTML = '<p class="loading">Chargement...</p>';
         try {
-            const response = yield fetch(`/api/docs/${filename}`);
-            const data = yield response.json();
+            const data = yield fetchWithRetry(`/api/docs/${filename}`);
             if (data.success) {
                 content.innerHTML = marked.parse(data.content);
                 content.scrollTop = 0;
+                Logger.info(`Document charge: ${filename}`);
             }
             else {
                 content.innerHTML = '<p class="error">Fichier non trouve</p>';
@@ -96,7 +151,7 @@ function loadDoc(filename) {
         }
         catch (error) {
             content.innerHTML = '<p class="error">Erreur de chargement</p>';
-            console.error('Erreur chargement doc:', error);
+            Logger.error('Erreur chargement doc:', error);
         }
     });
 }
@@ -111,4 +166,4 @@ window.addEventListener('popstate', () => __awaiter(void 0, void 0, void 0, func
 }));
 // Initialisation
 loadDocsList();
-console.log('Documentation viewer loaded!');
+Logger.success('Documentation viewer initialise');

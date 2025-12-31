@@ -1,13 +1,26 @@
 import { getMaxCubes } from "../config/loader.js";
+import { Logger } from "../utils/logger.js";
+import { DOM } from "../utils/dom.js";
+/**
+ * Valide et normalise une valeur de comptage de cubes
+ */
+function validateCubeCount(value, max) {
+    const num = parseInt(value, 10);
+    if (isNaN(num) || num < 1)
+        return 1;
+    if (num > max)
+        return max;
+    return num;
+}
 function getElements() {
     return {
-        countInput: document.getElementById('cube-count'),
-        wireframeCheckbox: document.getElementById('wireframe'),
-        colorInput: document.getElementById('cube-color'),
-        createBtn: document.getElementById('create-btn'),
-        clearBtn: document.getElementById('clear-btn'),
-        cubeCountDisplay: document.getElementById('cube-count-display'),
-        maxCubesDisplay: document.getElementById('max-cubes')
+        countInput: DOM.input('cube-count'),
+        wireframeCheckbox: DOM.input('wireframe'),
+        colorInput: DOM.input('cube-color'),
+        createBtn: DOM.button('create-btn'),
+        clearBtn: DOM.button('clear-btn'),
+        cubeCountDisplay: DOM.element('cube-count-display'),
+        maxCubesDisplay: DOM.elementOrNull('max-cubes')
     };
 }
 export function setupCubeControls(cubeManager) {
@@ -20,26 +33,31 @@ export function setupCubeControls(cubeManager) {
     // Bouton creer
     elements.createBtn.addEventListener('click', () => {
         const currentCount = cubeManager.getCount();
-        let count = parseInt(elements.countInput.value) || 1;
+        let count = validateCubeCount(elements.countInput.value, maxCubes);
         // Verifier la limite
         if (currentCount >= maxCubes) {
+            Logger.warn(`Limite atteinte: ${maxCubes} cubes maximum`);
             alert(`Limite atteinte ! Maximum ${maxCubes} cubes.`);
             return;
         }
         // Ajuster si depasse la limite
         if (currentCount + count > maxCubes) {
             count = maxCubes - currentCount;
+            Logger.info(`Ajustement: ${count} cube(s) pour respecter la limite`);
             alert(`Seulement ${count} cube(s) ajoute(s) pour respecter la limite de ${maxCubes}.`);
         }
         const wireframe = elements.wireframeCheckbox.checked;
         const color = elements.colorInput.value;
         cubeManager.createCubes(count, wireframe, color);
         updateDisplay(cubeManager);
+        Logger.debug(`Cubes crees: ${count}, total: ${cubeManager.getCount()}`);
     });
     // Bouton supprimer tout
     elements.clearBtn.addEventListener('click', () => {
+        const previousCount = cubeManager.getCount();
         cubeManager.clearAll();
         updateDisplay(cubeManager);
+        Logger.info(`${previousCount} cube(s) supprime(s)`);
     });
 }
 export function updateDisplay(cubeManager) {

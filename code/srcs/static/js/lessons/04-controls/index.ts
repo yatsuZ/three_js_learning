@@ -1,6 +1,5 @@
 import {
-	createScene,
-	setupResize,
+	LessonBase,
 	CubeManager,
 	loadConfig,
 	setupCubeControls,
@@ -8,57 +7,72 @@ import {
 	createOrbitControls,
 	createBoundingBox
 } from '../../shared/index.ts';
+import type { LessonConfig } from '../../shared/index.ts';
+import type { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Zone de spawn des cubes (doit correspondre a cubeManager)
 const SPAWN_ZONE = { x: 10, y: 6, z: 6 };
 
-// === INIT ===
-async function init(): Promise<void> {
-	// Charger la config depuis l'API
-	await loadConfig();
+/**
+ * Lecon 04 - OrbitControls et navigation camera
+ */
+class Lesson04 extends LessonBase {
+	private cubeManager!: CubeManager;
+	private controls!: OrbitControls;
 
-	// Setup scene
-	const ctx = createScene({ backgroundColor: '#1a1a2e' });
-	setupResize(ctx);
-
-	// Ajouter les lumieres
-	addLights(ctx.scene, {
-		ambient: { color: '#ffffff', intensity: 0.8 },
-		point: { color: '#ffffff', intensity: 1.5, distance: 100, position: { x: 5, y: 5, z: 5 } },
-		directional: { color: '#ffffff', intensity: 1, position: { x: -5, y: 10, z: 5 } }
-	});
-
-	// Creer le bounding box (zone de spawn)
-	createBoundingBox(ctx.scene, SPAWN_ZONE, '#666666');
-
-	// Controles de camera (OrbitControls)
-	const controls = createOrbitControls(ctx, {
-		enableDamping: true,
-		dampingFactor: 0.05,
-		minDistance: 5,
-		maxDistance: 30
-	});
-
-	// Cube manager avec lumieres
-	const cubeManager = new CubeManager(ctx.scene, {
-		useLighting: true,
-		metalness: 0.3,
-		roughness: 0.7
-	});
-
-	// Setup UI
-	setupCubeControls(cubeManager);
-
-	// Animation
-	function animate(): void {
-		requestAnimationFrame(animate);
-		controls.update(); // Necessaire pour le damping
-		cubeManager.updateAll();
-		ctx.renderer.render(ctx.scene, ctx.camera);
+	constructor() {
+		const config: LessonConfig = {
+			id: '04',
+			name: 'Controls'
+		};
+		super(config);
 	}
 
-	animate();
-	console.log('Lesson 04 - Controls loaded!');
+	protected async setup(): Promise<void> {
+		// Charger la config depuis l'API
+		await loadConfig();
+
+		// Ajouter les lumieres
+		addLights(this.scene, {
+			ambient: { color: '#ffffff', intensity: 0.8 },
+			point: { color: '#ffffff', intensity: 1.5, distance: 100, position: { x: 5, y: 5, z: 5 } },
+			directional: { color: '#ffffff', intensity: 1, position: { x: -5, y: 10, z: 5 } }
+		});
+
+		// Creer le bounding box (zone de spawn)
+		createBoundingBox(this.scene, SPAWN_ZONE, '#666666');
+
+		// Controles de camera (OrbitControls)
+		this.controls = createOrbitControls(this.sceneContext, {
+			enableDamping: true,
+			dampingFactor: 0.05,
+			minDistance: 5,
+			maxDistance: 30
+		});
+
+		// Cube manager avec lumieres
+		this.cubeManager = new CubeManager(this.scene, {
+			useLighting: true,
+			metalness: 0.3,
+			roughness: 0.7
+		});
+
+		// Setup UI
+		setupCubeControls(this.cubeManager);
+
+		// Cleanup
+		this.onDispose(() => {
+			this.cubeManager.clearAll();
+			this.controls.dispose();
+		});
+	}
+
+	protected update(_delta: number): void {
+		this.controls.update(); // Necessaire pour le damping
+		this.cubeManager.updateAll();
+	}
 }
 
-init();
+// Demarrer la lecon
+const lesson = new Lesson04();
+lesson.start();
