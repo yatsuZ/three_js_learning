@@ -96,6 +96,7 @@ FRAMEWORK  →  appelle  →  TON CODE
 | Technologie | Type | Description |
 |-------------|------|-------------|
 | **Three.js** | Library | Rendu 3D WebGL simplifie |
+| **GSAP** | Library | Animations fluides et performantes |
 | **Marked.js** | Library | Convertit Markdown → HTML |
 | **TypeScript** | Langage | JavaScript avec types |
 
@@ -114,6 +115,91 @@ FRAMEWORK  →  appelle  →  TON CODE
 | **Docker** | Outil | Conteneurisation |
 | **npm** | Gestionnaire | Gestion des packages Node.js |
 | **TypeScript Compiler** | Outil | Compile TS → JS |
+
+---
+
+## Focus : GSAP
+
+### C'est quoi ?
+
+**GSAP** (GreenSock Animation Platform) est une **library** JavaScript pour creer des **animations fluides et performantes**.
+
+Elle est utilisee par des millions de sites, y compris Google, Apple, et NASA.
+
+### Library ou Framework ?
+
+**GSAP est une LIBRARY** car :
+- Tu decides quand lancer une animation
+- Tu gardes le controle sur tes objets
+- Tu appelles les fonctions quand tu veux
+
+```javascript
+// TON code appelle GSAP
+gsap.to(cube.position, { y: 2, duration: 1 });   // Tu decides quand
+gsap.timeline().to(...).to(...);                  // Tu decides comment
+```
+
+### Pourquoi GSAP plutot que CSS/JavaScript natif ?
+
+| Methode | Avantages | Inconvenients |
+|---------|-----------|---------------|
+| **CSS Animations** | Simple, performant | Limite, pas de controle JS |
+| **requestAnimationFrame** | Controle total | Verbose, calculs manuels |
+| **GSAP** | Puissant + Simple + Performant | Dependance externe |
+
+GSAP offre :
+- **Easing avances** (elastic, bounce, back...)
+- **Timelines** pour orchestrer des sequences
+- **Stagger** pour animer des groupes avec decalage
+- **Controle** (pause, resume, reverse, seek)
+
+### Concepts cles
+
+```javascript
+// Animation simple
+gsap.to(element, {
+    x: 100,           // Propriete a animer
+    duration: 1,      // Duree en secondes
+    ease: "power2.out" // Courbe d'acceleration
+});
+
+// Timeline (sequence d'animations)
+const tl = gsap.timeline();
+tl.to(cube1, { y: 2 })      // D'abord cube1 monte
+  .to(cube2, { y: 2 })      // Puis cube2 monte
+  .to(cube3, { y: 2 });     // Puis cube3 monte
+
+// Stagger (animer un groupe avec decalage)
+gsap.to([cube1, cube2, cube3], {
+    y: 2,
+    stagger: 0.2  // 0.2s entre chaque
+});
+```
+
+### Easings populaires
+
+| Easing | Effet |
+|--------|-------|
+| `power1.out` | Leger ralentissement |
+| `power2.inOut` | Smooth (debut + fin) |
+| `elastic.out` | Rebond elastique |
+| `bounce.out` | Rebond comme une balle |
+| `back.out` | Depasse puis revient |
+
+### Integration avec Three.js
+
+GSAP anime n'importe quelle propriete JavaScript, donc il fonctionne parfaitement avec Three.js :
+
+```javascript
+// Animer la position d'un mesh
+gsap.to(mesh.position, { x: 5, y: 2, duration: 2 });
+
+// Animer la rotation
+gsap.to(mesh.rotation, { y: Math.PI * 2, duration: 1 });
+
+// Animer le scale
+gsap.to(mesh.scale, { x: 2, y: 2, z: 2, ease: "elastic.out" });
+```
 
 ---
 
@@ -228,6 +314,7 @@ fastify.get('/api/data', async (request, reply) => {
 
 Dans ce projet :
 - **Three.js** = Library (tu appelles)
+- **GSAP** = Library (tu appelles)
 - **Marked.js** = Library (tu appelles)
 - **Fastify** = Framework (il t'appelle)
 - Tous sont distribues comme **packages** npm
